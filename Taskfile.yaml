@@ -9,22 +9,26 @@ vars:
 tasks:
   build:
     cmds:
-      - docker build . \
+      - >-
+        docker build . \
           -f tg_bot.Dockerfile \
-          -t agrrh/day-to-remember:dev-tg-bot \
-      - docker build . \
+          -t agrrh/day-to-remember:dev-tg-bot
+      - >-
+        docker build . \
           -f tg_schedule.Dockerfile \
-          -t agrrh/day-to-remember:dev-tg-schedule \
+          -t agrrh/day-to-remember:dev-tg-schedule
 
   push:
     deps:
       - build
     cmds:
-      - docker build . \
+      - >-
+        docker build . \
           -f tg_bot.Dockerfile \
-          -t agrrh/day-to-remember:dev-${BUILD_DATE}-tg-bot \
+          -t agrrh/day-to-remember:dev-{{.BUILD_DATE}}-tg-bot \
           --push
-      - docker build . \
+      - >-
+        docker build . \
           -f tg_schedule.Dockerfile \
-          -t agrrh/day-to-remember:dev-${BUILD_DATE}-tg-schedule \
+          -t agrrh/day-to-remember:dev-{{.BUILD_DATE}}-tg-schedule \
           --push
