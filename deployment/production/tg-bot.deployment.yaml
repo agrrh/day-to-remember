@@ -1,0 +1,54 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: tg-bot
+  namespace: day-to-remember
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app: day-to-remember
+      component: tg-bot
+  template:
+    metadata:
+      labels:
+        app: day-to-remember
+        component: tg-bot
+    spec:
+      containers:
+        - name: main
+
+          image: agrrh/day-to-remember:dev-20260102-194714-tg-bot
+
+          env:
+            # - name: APP_REDIS_HOST
+            #   value: redis
+
+            - name: TG_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: config
+                  key: TG_TOKEN
+
+            - name: GRIST_URL
+              valueFrom:
+                secretKeyRef:
+                  name: config
+                  key: GRIST_URL
+            - name: GRIST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: config
+                  key: GRIST_TOKEN
+            - name: GRIST_DOC_ID
+              valueFrom:
+                secretKeyRef:
+                  name: config
+                  key: GRIST_DOC_ID
