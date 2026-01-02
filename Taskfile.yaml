@@ -1,0 +1,30 @@
+---
+
+version: '3'
+
+vars:
+  BUILD_DATE:
+    sh: date +"%Y%m%d-%H%M%S"
+
+tasks:
+  build:
+    cmds:
+      - docker build . \
+          -f tg_bot.Dockerfile \
+          -t agrrh/day-to-remember:dev-tg-bot \
+      - docker build . \
+          -f tg_schedule.Dockerfile \
+          -t agrrh/day-to-remember:dev-tg-schedule \
+
+  push:
+    deps:
+      - build
+    cmds:
+      - docker build . \
+          -f tg_bot.Dockerfile \
+          -t agrrh/day-to-remember:dev-${BUILD_DATE}-tg-bot \
+          --push
+      - docker build . \
+          -f tg_schedule.Dockerfile \
+          -t agrrh/day-to-remember:dev-${BUILD_DATE}-tg-schedule \
+          --push

@@ -1,0 +1,12 @@
+[project]
+name = "day-to-remember"
+version = "0.1.0"
+description = "Application to log and review achievements"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "grist-api>=0.1.1",
+    "pydantic>=2.12.5",
+    "pytelegrambotapi>=4.29.1",
+    "schedule>=1.2.2",
+]
