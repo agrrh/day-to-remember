@@ -2,39 +2,20 @@
 
 ```mermaid
 graph LR
-  telegram((Telegram API))
+  user((User))
+  telegram((Telegram))
+  grist((Grist))
 
   subgraph day-to-remember
-    tg-planner
-    tg-handler
-    database
-
-    database[(database)] -.- tg-planner
-    tg-handler -.- database
+    tg-schedule
+    tg-bot
   end
 
-  tg-planner --> telegram
-  telegram --> tg-handler
-```
+  telegram -->|1. handle incoming messages| tg-bot
+  tg-bot -.-> grist
 
-## Repo structure
+  tg-schedule -->|2. produce periodic updates| telegram
+  tg-schedule -.-> grist
 
-```
-# Пример объединения DDD + Hexagonal
-src/
-├── domain/           # Чистая бизнес-логика (DDD)
-│   ├── order.py      # Агрегаты, entities, value objects
-│   ├── services.py   # Domain services
-│   └── events.py     # Domain events
-├── application/      # Use cases, orchestration
-│   └── use_cases/
-│       └── place_order.py
-├── infrastructure/   # Реализации репозиториев, внешние API
-│   ├── repositories/
-│   │   └── postgres_order_repo.py
-│   └── api_clients/
-│       └── payment_gateway_client.py
-└── presentation/     # Controllers, API endpoints
-    └── api/
-        └── order_controller.py
+  user --> telegram
 ```
