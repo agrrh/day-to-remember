@@ -21,6 +21,7 @@ COPY uv.lock ./
 RUN uv sync --locked
 
 COPY ./app ./app
+COPY ./tg_bot.py ./
 COPY ./tg_schedule.py ./
 
-CMD ["uv", "run", "tg_schedule.py"]
+CMD ["uv", "run", "tg_bot.py"]

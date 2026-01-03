@@ -25,7 +25,9 @@ spec:
       containers:
         - name: main
 
-          image: agrrh/day-to-remember:dev-20260102-194714-tg-bot
+          image: agrrh/day-to-remember:dev-20260103-082849
+          command: ["uv"]
+          args: ["run", "tg_bot.py"]
 
           env:
             # - name: APP_REDIS_HOST

@@ -11,12 +11,7 @@ tasks:
     cmds:
       - >-
         docker build . \
-          -f tg_bot.Dockerfile \
           -t agrrh/day-to-remember:dev-tg-bot
-      - >-
-        docker build . \
-          -f tg_schedule.Dockerfile \
-          -t agrrh/day-to-remember:dev-tg-schedule
 
   push:
     deps:
@@ -24,11 +19,5 @@ tasks:
     cmds:
       - >-
         docker build . \
-          -f tg_bot.Dockerfile \
-          -t agrrh/day-to-remember:dev-{{.BUILD_DATE}}-tg-bot \
-          --push
-      - >-
-        docker build . \
-          -f tg_schedule.Dockerfile \
-          -t agrrh/day-to-remember:dev-{{.BUILD_DATE}}-tg-schedule \
+          -t agrrh/day-to-remember:dev-{{.BUILD_DATE}} \
           --push
