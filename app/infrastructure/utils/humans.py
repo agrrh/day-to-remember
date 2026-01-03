@@ -1,4 +1,4 @@
-def text_to_seconds(text: str, has_attachment: bool = False) -> int:
+def text_to_seconds(text: str, has_attachment: bool = False) -> float:
     words = text.split()
     words = filter(None, words)
 
