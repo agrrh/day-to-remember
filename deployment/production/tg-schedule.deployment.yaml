@@ -1,5 +1,4 @@
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 
@@ -25,7 +24,7 @@ spec:
       containers:
         - name: main
 
-          image: agrrh/day-to-remember:dev-20260103-082849
+          image: agrrh/day-to-remember:dev-20260103-092910
           command: ["uv"]
           args: ["run", "tg_schedule.py"]
 
