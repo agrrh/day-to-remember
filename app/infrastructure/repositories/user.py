@@ -1,5 +1,4 @@
 import copy
-import re
 
 from telebot.types import Message as TgMessage
 
