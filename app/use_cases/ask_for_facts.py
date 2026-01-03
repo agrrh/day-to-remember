@@ -30,7 +30,7 @@ class AskForFactsUseCase:
 
         for user in users:
             shipment = TelegramShipment(
-                user_id=user.get("telegram_id", 0),
+                user_id=user.telegram_id,
                 messages=[AbstractMessage(text=text)],
             )
             shipments.append(shipment)
