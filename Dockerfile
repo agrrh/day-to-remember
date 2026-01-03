@@ -1,5 +1,8 @@
 FROM python:3.13-slim
 
+ENV PYTHONDONTWRITEBYTECODE=yes
+ENV PYTHONUNBUFFERED=yes
+
 RUN pip install --no-cache-dir uv==0.9.18
 
 RUN apt-get update \
@@ -23,8 +26,5 @@ RUN uv sync --locked
 COPY ./app ./app
 COPY ./tg_bot.py ./
 COPY ./tg_schedule.py ./
-
-ENV PYTHONDONTWRITEBYTECODE=yes
-ENV PYTHONUNBUFFERED=yes
 
 CMD ["uv", "run", "tg_bot.py"]
