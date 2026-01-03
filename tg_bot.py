@@ -1,21 +1,19 @@
 import os
+
 import telebot
 
-from app.use_cases.start_bot import StartBotUseCase
-from app.use_cases.create_fact import CreateFactUseCase
-
 from app.infrastructure.external.grist_adapter import GristAdapter
-from app.infrastructure.repositories.user import UserRepository
 from app.infrastructure.repositories.fact import FactRepository
-
+from app.infrastructure.repositories.user import UserRepository
 from app.infrastructure.utils.telegram import process_replies
+from app.use_cases.create_fact import CreateFactUseCase
+from app.use_cases.start_bot import StartBotUseCase
 
+TG_TOKEN = os.environ.get("TG_TOKEN", "")
 
-TG_TOKEN = os.environ.get("TG_TOKEN")
-
-GRIST_URL = os.environ.get("GRIST_URL")
-GRIST_DOC_ID = os.environ.get("GRIST_DOC_ID")
-GRIST_TOKEN = os.environ.get("GRIST_TOKEN")
+GRIST_URL = os.environ.get("GRIST_URL", "")
+GRIST_DOC_ID = os.environ.get("GRIST_DOC_ID", "")
+GRIST_TOKEN = os.environ.get("GRIST_TOKEN", "")
 
 bot = telebot.TeleBot(TG_TOKEN)
 
@@ -39,7 +37,8 @@ def handle_start(message):
 
 
 @bot.message_handler(
-    func=lambda message: message.reply_to_message.from_user.is_bot and "#day" in message.reply_to_message.text
+    func=lambda message: message.reply_to_message.from_user.is_bot
+    and "#day" in message.reply_to_message.text
 )
 # @bot.message_handler(func=lambda message: True)
 def handle_fact(message):

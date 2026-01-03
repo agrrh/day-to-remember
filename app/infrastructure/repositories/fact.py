@@ -1,7 +1,6 @@
 import copy
 
 from app.domain.fact import Fact
-
 from app.infrastructure.external.grist_adapter import GristAdapter
 
 
@@ -11,6 +10,6 @@ class FactRepository:
         self.adapter.table_id = "Facts"
 
     def save(self, fact: Fact) -> bool:
-        self.adapter.create_record(fact.dict())
+        self.adapter.create_record(fact.model_dump())
 
         return True

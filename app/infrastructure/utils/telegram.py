@@ -1,10 +1,12 @@
+# TODO: Move out of utils!
+#   Some specific class maybe? Domain service?
+
 import time
 
 from telebot import TeleBot
 from telebot.types import Message
 
 from app.dto.abstract_message import AbstractMessage
-
 from app.infrastructure.utils.humans import text_to_seconds
 
 
@@ -45,7 +47,9 @@ def send_messages(bot: TeleBot, user_id: int, messages: list[AbstractMessage]):
             )
         else:
             # TODO: Send error to logs, not to customer
-            bot.send_message(chat_id=user_id, text="Error, please contact service owner!")
+            bot.send_message(
+                chat_id=user_id, text="Error, please contact service owner!"
+            )
 
         if i < len(messages):
             time.sleep(text_to_seconds(message.text, bool(message.media_url)))

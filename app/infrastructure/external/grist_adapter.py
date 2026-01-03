@@ -6,8 +6,13 @@ class GristAdapter:
         self._client = GristDocAPI(document_id, server=url, api_key=api_key)
         self.table_id = "Table 1"
 
-    def get_records(self, filters: dict = None) -> list[dict]:
-        return self._client.fetch_table(self.table_id, filters=filters)
+    def get_records(self, filters: dict | None = None) -> list[dict]:
+        if filters is None:
+            filters = {}
+        return [
+            r._asdict()
+            for r in self._client.fetch_table(self.table_id, filters=filters)
+        ]
 
     def create_records(self, data_list: list[dict]) -> list[int]:
         row_ids = self._client.add_records(self.table_id, data_list)

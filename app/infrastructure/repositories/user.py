@@ -1,10 +1,11 @@
 import copy
+import re
 
 from telebot.types import Message as TgMessage
 
 from app.domain.user import User
-from app.infrastructure.utils.errors import BaseError
 from app.infrastructure.external.grist_adapter import GristAdapter
+from app.infrastructure.utils.errors import BaseError
 
 
 class ErrorUserNotFound(BaseError):
@@ -21,6 +22,10 @@ class UserRepository:
         self.adapter.table_id = "Users"
 
     def create_from_telegram_message(self, message: TgMessage) -> bool:
+        # TODO: Add specific error for missing from_user information
+        if not message.from_user:
+            raise ValueError("Telegram message does not contain from_user information.")
+
         name = (
             " ".join(
                 filter(
@@ -39,9 +44,15 @@ class UserRepository:
             name=name,
         )
 
-        self.adapter.create_record(user.dict())
+        record_id = self.adapter.create_record(user.model_dump())
+
+        return bool(record_id)
 
     def get_by_telegram_message(self, message: TgMessage) -> User:
+        # TODO: Add specific error for missing from_user information
+        if not message.from_user:
+            raise ValueError("Telegram message does not contain from_user information.")
+
         users_found = self.adapter.get_records(
             filters={
                 "telegram_id": message.from_user.id,
@@ -52,7 +63,7 @@ class UserRepository:
             case 0:
                 raise ErrorUserNotFound
             case 1:
-                _u = (users_found[0])._asdict()
+                _u = users_found[0]
                 user = User(**_u)
             case _:
                 raise ErrorMultipleUsersFound
@@ -62,4 +73,4 @@ class UserRepository:
     def get_active_users(self) -> list[User]:
         users_found = self.adapter.get_records(filters={})
 
-        return [u._asdict() for u in users_found]
+        return [User(**_u) for _u in users_found]

@@ -1,21 +1,19 @@
 import os
-import telebot
-import schedule
 import time
 
-from app.use_cases.ask_for_facts import AskForFactsUseCase
+import schedule
+import telebot
 
 from app.infrastructure.external.grist_adapter import GristAdapter
 from app.infrastructure.repositories.user import UserRepository
-
 from app.infrastructure.utils.telegram import send_messages
+from app.use_cases.ask_for_facts import AskForFactsUseCase
 
+TG_TOKEN = os.environ.get("TG_TOKEN", "")
 
-TG_TOKEN = os.environ.get("TG_TOKEN")
-
-GRIST_URL = os.environ.get("GRIST_URL")
-GRIST_DOC_ID = os.environ.get("GRIST_DOC_ID")
-GRIST_TOKEN = os.environ.get("GRIST_TOKEN")
+GRIST_URL = os.environ.get("GRIST_URL", "")
+GRIST_DOC_ID = os.environ.get("GRIST_DOC_ID", "")
+GRIST_TOKEN = os.environ.get("GRIST_TOKEN", "")
 
 bot = telebot.TeleBot(TG_TOKEN)
 
