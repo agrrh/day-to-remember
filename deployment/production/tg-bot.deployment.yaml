@@ -30,8 +30,8 @@ spec:
           args: ["run", "tg_bot.py"]
 
           env:
-            # - name: APP_REDIS_HOST
-            #   value: redis
+            - name: TZ
+              value: Europe/Moscow
 
             - name: TG_TOKEN
               valueFrom:
