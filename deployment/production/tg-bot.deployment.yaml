@@ -24,7 +24,7 @@ spec:
       containers:
         - name: main
 
-          image: agrrh/day-to-remember:dev-20260103-142209
+          image: agrrh/day-to-remember:dev-20260103-145140
           command: ["uv"]
           args: ["run", "tg_bot.py"]
 
