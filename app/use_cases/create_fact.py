@@ -9,7 +9,9 @@ from app.infrastructure.repositories.user import ErrorUserNotFound, UserReposito
 
 
 class CreateFactUseCase:
-    def __init__(self, user_repository: UserRepository, fact_repository: FactRepository):
+    def __init__(
+        self, user_repository: UserRepository, fact_repository: FactRepository
+    ):
         self.fact_repository = fact_repository
         self.user_repository = user_repository
 
@@ -25,12 +27,16 @@ class CreateFactUseCase:
             user = self.user_repository.get_by_telegram_message(message)
         except ErrorUserNotFound:
             messages = [
-                AbstractMessage(text="Ой, я вас не узнаю! Повторите запуск бота через `/start`, пожалуйста."),
+                AbstractMessage(
+                    text="Ой, я вас не узнаю! Повторите запуск бота через `/start`, пожалуйста."
+                ),
             ]
             return messages
         except Exception:
             messages = [
-                AbstractMessage(text="Ой, что-то сломалось! Пожалуйста, попробуйте позже."),
+                AbstractMessage(
+                    text="Ой, что-то сломалось! Пожалуйста, попробуйте позже."
+                ),
             ]
             return messages
 
@@ -47,7 +53,9 @@ class CreateFactUseCase:
         except Exception as e:
             print(e)
             messages = [
-                AbstractMessage(text="Ой, не могу сохранить событие! Пожалуйста, попробуйте позже."),
+                AbstractMessage(
+                    text="Ой, не могу сохранить событие! Пожалуйста, попробуйте позже."
+                ),
             ]
             return messages
 
