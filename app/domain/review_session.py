@@ -1,8 +1,8 @@
 from enum import Enum
 
-from domain.user import User
-from domain.review_period import ReviewPeriod
-from domain.fact import Fact
+from app.domain.fact import Fact
+from app.domain.review_period import ReviewPeriod
+from app.domain.user import User
 
 
 class ReviewSessionState(Enum):

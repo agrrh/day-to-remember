@@ -1,6 +1,6 @@
 import datetime
 
-from domain.errors import DomainError
+from app.domain.errors import DomainError
 
 
 class ErrorReviewPeriodStartAfterEnd(DomainError):

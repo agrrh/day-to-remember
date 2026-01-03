@@ -1,10 +1,9 @@
-import locale
 import datetime
-
-from app.infrastructure.repositories.user import UserRepository
+import locale
 
 from app.dto.abstract_message import AbstractMessage
 from app.dto.telegram_shipment import TelegramShipment
+from app.infrastructure.repositories.user import UserRepository
 
 
 class AskForFactsUseCase:

@@ -4,9 +4,8 @@ from telebot.types import Message
 
 from app.domain.fact import Fact
 from app.dto.abstract_message import AbstractMessage
-from app.infrastructure.repositories.user import ErrorUserNotFound
 from app.infrastructure.repositories.fact import FactRepository
-from app.infrastructure.repositories.user import UserRepository
+from app.infrastructure.repositories.user import ErrorUserNotFound, UserRepository
 
 
 class CreateFactUseCase:
