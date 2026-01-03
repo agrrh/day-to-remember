@@ -19,5 +19,5 @@ class Fact(BaseModel):
 
     # TODO: Place validation rules to more conventional place
     def create(self):
-        if not self.text or self.text.length < 10:
+        if not self.text or len(self.text) < 10:
             raise ErrorFactTextEmpty
