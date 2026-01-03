@@ -8,23 +8,11 @@ from app.dto.abstract_message import AbstractMessage
 from app.infrastructure.utils.humans import text_to_seconds
 
 
-def abstract_message_to_telegram(message: AbstractMessage) -> dict:
-    tg_message = {}
-
-    if message.media_url:
-        tg_message["photo"] = message.media_url
-        tg_message["caption"] = message.text
-    else:
-        tg_message["text"] = message.text
-
-    return tg_message
-
-
 def process_replies(bot: TeleBot, message: Message, replies: list[AbstractMessage]):
     """Given a Telebot instance, incoming message and number of replies, process those replies."""
 
     for i, reply in enumerate(replies):
-        reply_message = abstract_message_to_telegram(reply)
+        reply_message = reply.to_telegram_args()
 
         if reply_message.get("text"):
             bot.reply_to(message, **reply_message)
@@ -46,7 +34,7 @@ def send_messages(bot: TeleBot, user_id: int, messages: list[AbstractMessage]):
     """Given a Telebot instance, user ID and number of messages, send those messages."""
 
     for i, message in enumerate(messages):
-        tg_message = abstract_message_to_telegram(message)
+        tg_message = message.to_telegram_args()
 
         if tg_message.get("text"):
             bot.send_message(chat_id=user_id, **tg_message)
