@@ -24,4 +24,7 @@ COPY ./app ./app
 COPY ./tg_bot.py ./
 COPY ./tg_schedule.py ./
 
+ENV PYTHONDONTWRITEBYTECODE=yes
+ENV PYTHONUNBUFFERED=yes
+
 CMD ["uv", "run", "tg_bot.py"]
