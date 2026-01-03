@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
-
-from uuid import uuid4
 import datetime
+from uuid import uuid4
+
+from pydantic import BaseModel, Field
 
 from app.domain.errors import DomainError
 
