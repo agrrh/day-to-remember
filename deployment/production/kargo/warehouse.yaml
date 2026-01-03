@@ -1,0 +1,18 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+
+metadata:
+  name: backend
+  namespace: day-to-remember
+
+spec:
+  freightCreationPolicy: Automatic
+  interval: 1h0m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 5
+        imageSelectionStrategy: NewestBuild
+        insecureSkipTLSVerify: true
+        repoURL: proxy.dockerhub.svc/agrrh/day-to-remember
+        strictSemvers: false

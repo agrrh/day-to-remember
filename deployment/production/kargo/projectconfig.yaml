@@ -1,0 +1,13 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: ProjectConfig
+
+metadata:
+  name: day-to-remember
+  namespace: day-to-remember
+
+spec:
+  promotionPolicies:
+    - autoPromotionEnabled: true
+      stageSelector:
+        name: production

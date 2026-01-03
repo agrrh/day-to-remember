@@ -1,0 +1,56 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+
+metadata:
+  name: production
+  namespace: day-to-remember
+
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: backend
+      sources:
+        direct: true
+        stages: []
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            author:
+              email: noreply@kargo.agrrh.com
+              name: Kargo
+            checkout:
+              - branch: master
+                path: ./repo
+            repoURL: https://github.com/agrrh/day-to-remember.git
+
+        - as: update-tg-bot
+          uses: yaml-update
+          config:
+            path: ./repo/deployment/production/tg-bot.deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: agrrh/day-to-remember:${{ imageFrom('proxy.dockerhub.svc/agrrh/day-to-remember').Tag }}
+
+        - as: update-tg-schedule
+          uses: yaml-update
+          config:
+            path: ./repo/deployment/production/tg-schedule.deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: agrrh/day-to-remember:${{ imageFrom('proxy.dockerhub.svc/agrrh/day-to-remember').Tag }}
+
+        - uses: git-commit
+          config:
+            message: "chore: update deployment images to ${{ imageFrom('proxy.dockerhub.svc/agrrh/day-to-remember').Tag
+              }}"
+            path: ./repo
+
+        - uses: git-push
+          config:
+            path: ./repo
+            provider: github
+            targetBranch: master
