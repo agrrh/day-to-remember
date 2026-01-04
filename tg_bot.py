@@ -35,7 +35,7 @@ def handle_start(message):
         user_repository=user_repository,
     )
     sending = handler(message)
-    telegram_adapter.process_sending(sending)
+    telegram_adapter.process_sending(sending=sending)
 
 
 @bot.message_handler(
@@ -49,7 +49,7 @@ def handle_fact(message):
         fact_repository=fact_repository,
     )
     sending = handler(message)
-    telegram_adapter.process_sending(sending)
+    telegram_adapter.process_sending(sending=sending, message_to_reply=message)
 
 
 if __name__ == "__main__":

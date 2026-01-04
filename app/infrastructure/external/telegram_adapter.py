@@ -20,24 +20,23 @@ class TelegramAdapter:
     ) -> bool:
         """Given a Telebot instance, user ID and number of messages, send those messages, possibly as replies."""
 
+        # TODO: Check if sent successful
         for i, message in enumerate(sending.messages):
-            success = False
-
             if message.text:
-                success = self.__send_text(
+                self.__send_text(
                     chat_id=sending.chat_id,
                     message=message,
                     message_to_reply=message_to_reply,
                 )
             elif message.media_url:
-                success = self.__send_photo(
+                self.__send_photo(
                     chat_id=sending.chat_id,
                     message=message,
                     message_to_reply=message_to_reply,
                 )
             elif message.reaction_emoji is not None:
                 if message_to_reply is not None:
-                    success = self.__send_reaction(
+                    self.__send_reaction(
                         chat_id=sending.chat_id,
                         message_to_react=message_to_reply,
                         reaction=message.reaction_emoji,
@@ -52,10 +51,6 @@ class TelegramAdapter:
                 self.handler.send_message(
                     chat_id=sending.chat_id, text="Error, please contact service owner!"
                 )
-                success = False
-
-            if not success:
-                raise Exception("Error sending message to Telegram!")
 
             if i < len(sending.messages):
                 time.sleep(message.measure_read_time())
