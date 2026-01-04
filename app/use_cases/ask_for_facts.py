@@ -1,8 +1,8 @@
 import datetime
 import locale
 
-from app.dto.abstract_message import AbstractMessage
-from app.dto.telegram_shipment import TelegramShipment
+from app.dto.abstract_message import AbstractMessageDTO
+from app.dto.telegram_sending import TelegramSendingDTO
 from app.infrastructure.repositories.user import UserRepository
 
 
@@ -10,8 +10,8 @@ class AskForFactsUseCase:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def __call__(self) -> list[TelegramShipment]:
-        shipments = []
+    def __call__(self) -> list[TelegramSendingDTO]:
+        sendings = []
 
         # TODO: Add i18n
         locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
@@ -29,10 +29,10 @@ class AskForFactsUseCase:
         users = self.user_repository.get_active_users()
 
         for user in users:
-            shipment = TelegramShipment(
-                user_id=user.telegram_id,
-                messages=[AbstractMessage(text=text)],
+            sending = TelegramSendingDTO(
+                chat_id=user.telegram_id,
+                messages=[AbstractMessageDTO(text=text)],
             )
-            shipments.append(shipment)
+            sendings.append(sending)
 
-        return shipments
+        return sendings

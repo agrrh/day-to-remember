@@ -3,7 +3,8 @@ from datetime import datetime
 from telebot.types import Message as TgMessage
 
 from app.domain.fact import Fact
-from app.dto.abstract_message import AbstractMessage
+from app.dto.abstract_message import AbstractMessageDTO
+from app.dto.telegram_sending import TelegramSendingDTO
 from app.infrastructure.repositories.fact import FactRepository
 from app.infrastructure.repositories.user import ErrorUserNotFound, UserRepository
 
@@ -15,30 +16,35 @@ class CreateFactUseCase:
         self.fact_repository = fact_repository
         self.user_repository = user_repository
 
-    def __call__(self, message: TgMessage) -> list[AbstractMessage]:
+    def __call__(self, message: TgMessage) -> TelegramSendingDTO:
         # TODO: Move those to some DTO validation?
-        if not message.text:
+        if message.text is None:
             raise ValueError("Message text could not be empty while creating Fact.")
 
-        if not message.reply_to_message:
+        if message.reply_to_message is None:
             raise ValueError("Message should be a reply while creating Fact.")
+
+        if message.from_user is None:
+            raise ValueError("Message should have sender id.")
+
+        sending = TelegramSendingDTO(chat_id=message.from_user.id)
 
         try:
             user = self.user_repository.get_by_telegram_message(message)
         except ErrorUserNotFound:
-            messages = [
-                AbstractMessage(
+            sending.messages = [
+                AbstractMessageDTO(
                     text="Ой, я вас не узнаю! Повторите запуск бота через `/start`, пожалуйста."
                 ),
             ]
-            return messages
+            return sending
         except Exception:
-            messages = [
-                AbstractMessage(
+            sending.messages = [
+                AbstractMessageDTO(
                     text="Ой, что-то сломалось! Пожалуйста, попробуйте позже."
                 ),
             ]
-            return messages
+            return sending
 
         date_unix = message.reply_to_message.date
 
@@ -50,14 +56,15 @@ class CreateFactUseCase:
 
         try:
             self.fact_repository.save(fact)
-        except Exception as e:
-            print(e)
-            messages = [
-                AbstractMessage(
+        except Exception:
+            # TODO: Log error
+            sending.messages = [
+                AbstractMessageDTO(
                     text="Ой, не могу сохранить событие! Пожалуйста, попробуйте позже."
                 ),
             ]
-            return messages
+            return sending
 
-        # TODO: Make it possible to update older messages with some acks (e.g. add "Saved N facts :ok:")
-        return []
+        sending.messages = [AbstractMessageDTO(reaction_emoji="👌")]
+
+        return sending

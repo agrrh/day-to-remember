@@ -3,9 +3,9 @@ import os
 import telebot
 
 from app.infrastructure.external.grist_adapter import GristAdapter
+from app.infrastructure.external.telegram_adapter import TelegramAdapter
 from app.infrastructure.repositories.fact import FactRepository
 from app.infrastructure.repositories.user import UserRepository
-from app.infrastructure.utils.telegram import process_replies
 from app.use_cases.create_fact import CreateFactUseCase
 from app.use_cases.start_bot import StartBotUseCase
 
@@ -26,14 +26,16 @@ grist_adapter = GristAdapter(
 user_repository = UserRepository(grist=grist_adapter)
 fact_repository = FactRepository(grist=grist_adapter)
 
+telegram_adapter = TelegramAdapter(handler=bot)
+
 
 @bot.message_handler(commands=["start"])
 def handle_start(message):
     handler = StartBotUseCase(
         user_repository=user_repository,
     )
-    replies = handler(message)
-    process_replies(bot, message, replies)
+    sending = handler(message)
+    telegram_adapter.process_sending(sending)
 
 
 @bot.message_handler(
@@ -46,8 +48,8 @@ def handle_fact(message):
         user_repository=user_repository,
         fact_repository=fact_repository,
     )
-    replies = handler(message)
-    process_replies(bot, message, replies)
+    sending = handler(message)
+    telegram_adapter.process_sending(sending)
 
 
 if __name__ == "__main__":

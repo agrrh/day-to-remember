@@ -5,8 +5,8 @@ import schedule
 import telebot
 
 from app.infrastructure.external.grist_adapter import GristAdapter
+from app.infrastructure.external.telegram_adapter import TelegramAdapter
 from app.infrastructure.repositories.user import UserRepository
-from app.infrastructure.utils.telegram import send_messages
 from app.use_cases.ask_for_facts import AskForFactsUseCase
 
 TG_TOKEN = os.environ.get("TG_TOKEN", "")
@@ -24,14 +24,16 @@ grist_adapter = GristAdapter(
 )
 user_repository = UserRepository(grist=grist_adapter)
 
+telegram_adapter = TelegramAdapter(handler=bot)
+
 
 def job_ask_for_facts():
     ask_for_facts = AskForFactsUseCase(
         user_repository=user_repository,
     )
-    shipments = ask_for_facts()
-    for shipment in shipments:
-        send_messages(bot, shipment.user_id, shipment.messages)
+    sendings_list = ask_for_facts()
+    for sending in sendings_list:
+        telegram_adapter.process_sending(sending)
 
 
 if __name__ == "__main__":
