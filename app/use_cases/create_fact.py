@@ -65,6 +65,8 @@ class CreateFactUseCase:
             ]
             return sending
 
-        sending.messages = [AbstractMessageDTO(reaction_emoji="👌")]
+        # TODO: Determine text emotion and select appropriate emoji from list of possible reactions
+        #   https://core.telegram.org/bots/api#reactiontypeemoji
+        sending.messages = [AbstractMessageDTO(reaction_emoji="✍")]
 
         return sending
