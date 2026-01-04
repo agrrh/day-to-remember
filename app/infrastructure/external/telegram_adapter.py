@@ -1,9 +1,8 @@
 import time
-from typing import Sequence
 
 from telebot import TeleBot
 from telebot.types import Message as TgMessage
-from telebot.types import ReactionType, ReactionTypeEmoji
+from telebot.types import ReactionTypeEmoji
 
 from app.dto.abstract_message import AbstractMessageDTO
 from app.dto.telegram_sending import TelegramSendingDTO
@@ -92,9 +91,7 @@ class TelegramAdapter:
     def __send_reaction(
         self, chat_id: int, message_to_react: TgMessage, reaction: str
     ) -> bool:
-        reactions: Sequence[ReactionType] = [
-            ReactionTypeEmoji(type="emoji", emoji=reaction)
-        ]
+        reactions = [ReactionTypeEmoji(type="emoji", emoji=reaction)]
 
         success = self.handler.set_message_reaction(
             chat_id=chat_id,
