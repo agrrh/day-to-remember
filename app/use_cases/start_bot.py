@@ -20,7 +20,15 @@ class StartBotUseCase:
 
             # Return link to article for returning user
             sending.messages = [
-                AbstractMessageDTO(text="Повторное: (link)"),
+                AbstractMessageDTO(
+                    text=(
+                        "Привет!"
+                        "\n\n"
+                        "Я уже присылал тебе вводное приветствие, оно довольно объёмное, поэтому вместо повтора я присылаю ссылку:"
+                        "\n"
+                        "https://docs.google.com/document/d/1GbAmyw90n8vPf7gf9E9RQSms4Gq1-XdSU6IO8X_Vk0E"
+                    )
+                ),
             ]
         except ErrorUserNotFound:
             _ = self.user_repository.create_from_telegram_message(message)
