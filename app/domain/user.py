@@ -1,10 +1,13 @@
-from pydantic import BaseModel, Field
-from uuid import uuid4
+from typing import Annotated
+from uuid import UUID, uuid4
+
+from pydantic import AfterValidator, BaseModel, Field
 
 
 class User(BaseModel):
-    # TODO: Validate as uuid
-    uuid: str = Field(default_factory=lambda: str(uuid4()))
+    uuid: Annotated[str, AfterValidator(lambda x: UUID(x, version=4))] = Field(
+        default_factory=lambda: str(uuid4())
+    )
 
     name: str = ""
     telegram_id: int = 0
