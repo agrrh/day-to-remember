@@ -21,14 +21,14 @@ class TelegramAdapter:
 
         # TODO: Check if sent successful
         for i, message in enumerate(sending.messages):
-            if message.text:
-                self.__send_text(
+            if message.media_url:
+                self.__send_photo(
                     chat_id=sending.chat_id,
                     message=message,
                     message_to_reply=message_to_reply,
                 )
-            elif message.media_url:
-                self.__send_photo(
+            elif message.text:
+                self.__send_text(
                     chat_id=sending.chat_id,
                     message=message,
                     message_to_reply=message_to_reply,
