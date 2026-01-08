@@ -2,7 +2,7 @@ import datetime
 from typing import Annotated, Any
 from uuid import UUID, uuid4
 
-from pydantic import AfterValidator, BaseModel, Field
+from pydantic import BaseModel, Field
 
 from app.domain.errors import DomainError
 
@@ -12,11 +12,9 @@ class ErrorFactTextEmpty(DomainError):
 
 
 class Fact(BaseModel):
-    uuid: Annotated[str, AfterValidator(lambda x: UUID(x, version=4))] = Field(
-        default_factory=lambda: str(uuid4())
-    )
+    uuid: Annotated[str, UUID] = Field(default_factory=lambda: str(uuid4()))
 
-    user_uuid: Annotated[str, AfterValidator(lambda x: UUID(x, version=4))]
+    user_uuid: Annotated[str, UUID]
     text: str
     date: datetime.date = Field(default_factory=datetime.datetime.today)
 
