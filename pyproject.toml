@@ -10,3 +10,18 @@ dependencies = [
     "pytelegrambotapi>=4.29.1",
     "schedule>=1.2.2",
 ]
+
+[tool.ruff.lint]
+extend-select = [
+    "D",  # pydocstyle
+]
+
+ignore = [
+    "D100",
+    "D107",
+    "D202",
+    # "D417",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
