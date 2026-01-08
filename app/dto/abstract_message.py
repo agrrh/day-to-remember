@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from app.dto.buttons import ButtonsDTO
+
 
 class AbstractMessageDTO(BaseModel):
     """Container for Message, abstract from channel type to be sent on (messenger, email, whatever)."""
@@ -7,6 +9,8 @@ class AbstractMessageDTO(BaseModel):
     text: str | None = None
     media_url: str | None = None
     reaction_emoji: str | None = None
+
+    buttons: ButtonsDTO | None = None
 
     def to_telegram_args(self) -> dict:
         """Convert to dict with args capable with `telebot.send_message`."""
@@ -19,6 +23,8 @@ class AbstractMessageDTO(BaseModel):
             tg_message["reaction_emoji"] = self.reaction_emoji
         else:
             tg_message["text"] = self.text
+
+        # NOTE: Buttons are managed at Telegram adapter
 
         return tg_message
 

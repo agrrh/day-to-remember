@@ -1,8 +1,8 @@
 import time
 
 from telebot import TeleBot
+from telebot.types import InlineKeyboardMarkup, ReactionTypeEmoji
 from telebot.types import Message as TgMessage
-from telebot.types import ReactionTypeEmoji
 
 from app.dto.abstract_message import AbstractMessageDTO
 from app.dto.telegram_sending import TelegramSendingDTO
@@ -48,11 +48,21 @@ class TelegramAdapter:
                 message_to_reply=message_to_reply,
             )
         elif message.text:
-            self.__send_text(
-                chat_id=chat_id,
-                message=message,
-                message_to_reply=message_to_reply,
-            )
+            if message.buttons is not None:
+                buttons_markup = message.buttons.to_telegram_markup()
+
+                self.__send_text(
+                    chat_id=chat_id,
+                    message=message,
+                    message_to_reply=message_to_reply,
+                    reply_markup=buttons_markup,
+                )
+            else:
+                self.__send_text(
+                    chat_id=chat_id,
+                    message=message,
+                    message_to_reply=message_to_reply,
+                )
         elif message.reaction_emoji is not None:
             if message_to_reply is not None:
                 self.__send_reaction(
@@ -79,6 +89,7 @@ class TelegramAdapter:
         chat_id: int,
         message: AbstractMessageDTO,
         message_to_reply: TgMessage | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
     ) -> bool:
         tg_message = message.to_telegram_args()
 
