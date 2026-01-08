@@ -91,12 +91,15 @@ class TelegramAdapter:
         message_to_reply: TgMessage | None = None,
         reply_markup: InlineKeyboardMarkup | None = None,
     ) -> bool:
-        tg_message = message.to_telegram_args()
+        tg_args = message.to_telegram_args()
+
+        if reply_markup is not None:
+            tg_args["reply_markup"] = reply_markup
 
         if message_to_reply is not None:
-            message_sent = self.handler.reply_to(message=message_to_reply, **tg_message)
+            message_sent = self.handler.reply_to(message=message_to_reply, **tg_args)
         else:
-            message_sent = self.handler.send_message(chat_id=chat_id, **tg_message)
+            message_sent = self.handler.send_message(chat_id=chat_id, **tg_args)
 
         return bool(message_sent)
 
@@ -106,14 +109,14 @@ class TelegramAdapter:
         message: AbstractMessageDTO,
         message_to_reply: TgMessage | None = None,
     ) -> bool:
-        tg_message = message.to_telegram_args()
+        tg_args = message.to_telegram_args()
 
         if message_to_reply is not None:
             message_sent = self.handler.send_photo(
-                chat_id=chat_id, reply_to_message_id=message_to_reply.id, **tg_message
+                chat_id=chat_id, reply_to_message_id=message_to_reply.id, **tg_args
             )
         else:
-            message_sent = self.handler.send_photo(chat_id=chat_id, **tg_message)
+            message_sent = self.handler.send_photo(chat_id=chat_id, **tg_args)
 
         return bool(message_sent)
 
