@@ -28,6 +28,8 @@ telegram_adapter = TelegramAdapter(handler=bot)
 
 
 def job_ask_for_facts():
+    """Ask User to write today's Fact."""
+
     ask_for_facts = AskForFactsUseCase(
         user_repository=user_repository,
     )

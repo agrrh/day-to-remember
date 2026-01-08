@@ -16,11 +16,15 @@ class ErrorMultipleUsersFound(BaseError):
 
 
 class UserRepository:
+    """Interface for Users storage."""
+
     def __init__(self, grist: GristAdapter):
         self.adapter = copy.copy(grist)
         self.adapter.table_id = "Users"
 
     def create_from_telegram_message(self, message: TgMessage) -> bool:
+        """Create User from incoming Telegram message."""
+
         # TODO: Add specific error for missing from_user information
         if not message.from_user:
             raise ValueError("Telegram message does not contain from_user information.")
@@ -48,6 +52,8 @@ class UserRepository:
         return bool(record_id)
 
     def get_by_telegram_message(self, message: TgMessage) -> User:
+        """Get User from database by given Telegram message."""
+
         # TODO: Add specific error for missing from_user information
         if not message.from_user:
             raise ValueError("Telegram message does not contain from_user information.")
@@ -70,6 +76,9 @@ class UserRepository:
         return user
 
     def get_active_users(self) -> list[User]:
+        """List active Users."""
+
+        # TODO: Add filter to select non-blocked Users only (also add "blocked" attribute)
         users_found = self.adapter.get_records(filters={})
 
         return [User(**_u) for _u in users_found]

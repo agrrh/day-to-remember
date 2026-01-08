@@ -2,6 +2,8 @@ from pydantic import BaseModel
 
 
 class AbstractMessageDTO(BaseModel):
+    """Container for Message, abstract from channel type to be sent on (messenger, email, whatever)."""
+
     text: str | None = None
     media_url: str | None = None
     reaction_emoji: str | None = None
@@ -21,6 +23,7 @@ class AbstractMessageDTO(BaseModel):
         return tg_message
 
     def measure_read_time(self) -> float:
+        """Roughly measure time needed to read corresponding text."""
         if self.text is None:
             return 1
 

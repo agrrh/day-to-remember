@@ -10,6 +10,8 @@ from app.infrastructure.repositories.user import ErrorUserNotFound, UserReposito
 
 
 class CreateFactUseCase:
+    """User has sent a Message, store it as a Fact."""
+
     def __init__(
         self, user_repository: UserRepository, fact_repository: FactRepository
     ):
@@ -17,6 +19,8 @@ class CreateFactUseCase:
         self.user_repository = user_repository
 
     def __call__(self, message: TgMessage) -> TelegramSendingDTO:
+        """Entrypoint for this use case."""
+
         # TODO: Move those to some DTO validation?
         if message.text is None:
             raise ValueError("Message text could not be empty while creating Fact.")

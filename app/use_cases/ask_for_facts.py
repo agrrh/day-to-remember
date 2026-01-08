@@ -7,10 +7,14 @@ from app.infrastructure.repositories.user import UserRepository
 
 
 class AskForFactsUseCase:
+    """Send notification to Users, asking them to add today's Facts."""
+
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
     def __call__(self) -> list[TelegramSendingDTO]:
+        """Entrypoint for this use case."""
+
         sendings = []
 
         # TODO: Add i18n

@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 
 
 class User(BaseModel):
+    """User container."""
+
     uuid: Annotated[str, UUID] = Field(default_factory=lambda: str(uuid4()))
 
     name: str = ""

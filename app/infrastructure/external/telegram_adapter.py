@@ -9,6 +9,8 @@ from app.dto.telegram_sending import TelegramSendingDTO
 
 
 class TelegramAdapter:
+    """Interact with Telegram API - send messages."""
+
     def __init__(self, handler: TeleBot):
         self.handler = handler
 
@@ -38,7 +40,7 @@ class TelegramAdapter:
         message: AbstractMessageDTO,
         message_to_reply: TgMessage | None = None,
     ) -> None:
-        """Method to send abstract message, further sends text, meida or reactions."""
+        """Send abstract message, further sends text, media or reactions."""
         if message.media_url:
             self.__send_photo(
                 chat_id=chat_id,

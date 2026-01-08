@@ -6,10 +6,16 @@ from app.infrastructure.repositories.user import ErrorUserNotFound, UserReposito
 
 
 class StartBotUseCase:
+    """Things which happen when you send "/start" to Telegram bot."""
+
+    # TODO: Mention this is a Telegram-related scenario?
+
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
     def __call__(self, message: TgMEssage) -> TelegramSendingDTO:
+        """Entrypoint for this use case."""
+
         if message.from_user is None:
             raise ValueError("Message should have sender id.")
 
