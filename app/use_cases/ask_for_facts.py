@@ -17,6 +17,9 @@ class AskForFactsUseCase:
         locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
         today = datetime.date.today().strftime("%d %B")
 
+        # TODO: Add day name, e.g. was it monday, sunday, ..?
+        # TODO: Add holidays, based on language
+        # TODO: Take location into account to determine holdiays
         text = (
             f"📆 {today} #day"
             "\n\n"
