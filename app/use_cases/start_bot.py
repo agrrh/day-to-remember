@@ -1,4 +1,4 @@
-from telebot.types import Message
+from telebot.types import Message as TgMEssage
 
 from app.dto.abstract_message import AbstractMessageDTO
 from app.dto.telegram_sending import TelegramSendingDTO
@@ -9,7 +9,7 @@ class StartBotUseCase:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def __call__(self, message: Message) -> TelegramSendingDTO:
+    def __call__(self, message: TgMEssage) -> TelegramSendingDTO:
         if message.from_user is None:
             raise ValueError("Message should have sender id.")
 
