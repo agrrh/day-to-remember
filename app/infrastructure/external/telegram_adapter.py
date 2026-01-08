@@ -19,42 +19,58 @@ class TelegramAdapter:
     ) -> bool:
         """Given a Telebot instance, user ID and number of messages, send those messages, possibly as replies."""
 
-        # TODO: Check if sent successful
         for i, message in enumerate(sending.messages):
-            if message.media_url:
-                self.__send_photo(
-                    chat_id=sending.chat_id,
-                    message=message,
-                    message_to_reply=message_to_reply,
-                )
-            elif message.text:
-                self.__send_text(
-                    chat_id=sending.chat_id,
-                    message=message,
-                    message_to_reply=message_to_reply,
-                )
-            elif message.reaction_emoji is not None:
-                if message_to_reply is not None:
-                    self.__send_reaction(
-                        chat_id=sending.chat_id,
-                        message_to_react=message_to_reply,
-                        reaction=message.reaction_emoji,
-                    )
-                else:
-                    self.handler.send_message(
-                        chat_id=sending.chat_id,
-                        text="Can't react to non-existent message!",
-                    )
-            else:
-                # TODO: Send error to logs, not to customer
-                self.handler.send_message(
-                    chat_id=sending.chat_id, text="Error, please contact service owner!"
-                )
+            # TODO: Check if sent successful
+            self.__send_message(
+                chat_id=sending.chat_id,
+                message=message,
+                message_to_reply=message_to_reply,
+            )
 
             if i < len(sending.messages):
                 time.sleep(message.measure_read_time())
 
         return True
+
+    def __send_message(
+        self,
+        chat_id: int,
+        message: AbstractMessageDTO,
+        message_to_reply: TgMessage | None = None,
+    ) -> None:
+        """Method to send abstract message, further sends text, meida or reactions."""
+        if message.media_url:
+            self.__send_photo(
+                chat_id=chat_id,
+                message=message,
+                message_to_reply=message_to_reply,
+            )
+        elif message.text:
+            self.__send_text(
+                chat_id=chat_id,
+                message=message,
+                message_to_reply=message_to_reply,
+            )
+        elif message.reaction_emoji is not None:
+            if message_to_reply is not None:
+                self.__send_reaction(
+                    chat_id=chat_id,
+                    message_to_react=message_to_reply,
+                    reaction=message.reaction_emoji,
+                )
+            else:
+                self.handler.send_message(
+                    chat_id=chat_id,
+                    text="Can't react to non-existent message!",
+                )
+        else:
+            # TODO: Send error to logs, not to customer
+            self.handler.send_message(
+                chat_id=chat_id, text="Error, please contact service owner!"
+            )
+
+        # TODO: Return success/failure
+        return None
 
     def __send_text(
         self,
