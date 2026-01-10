@@ -1,4 +1,4 @@
-from telebot.types import Message as TgMEssage
+from telebot.types import Message as TgMessage
 
 from app.dto.abstract_message import AbstractMessageDTO
 from app.dto.telegram_sending import TelegramSendingDTO
@@ -13,7 +13,7 @@ class StartBotUseCase:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def __call__(self, message: TgMEssage) -> TelegramSendingDTO:
+    def __call__(self, message: TgMessage) -> TelegramSendingDTO:
         """Entrypoint for this use case."""
 
         if message.from_user is None:
