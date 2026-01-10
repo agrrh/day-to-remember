@@ -21,6 +21,8 @@ class CreateFactUseCase:
     def __call__(self, message: TgMessage) -> TelegramSendingDTO:
         """Entrypoint for this use case."""
 
+        # FIXME: Add log entry here!
+
         # TODO: Move those to some DTO validation?
         if message.text is None:
             raise ValueError("Message text could not be empty while creating Fact.")

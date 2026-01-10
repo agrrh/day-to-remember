@@ -1,4 +1,6 @@
+import calendar
 import datetime
+from enum import Enum
 from typing import Any, override
 
 from pydantic import BaseModel
@@ -10,42 +12,70 @@ class ErrorReviewPeriodStartAfterEnd(DomainError):
     """ReviewPeriod start date must be after end date."""
 
 
+class ReviewPeriodScope(str, Enum):
+    """Possible period scopes."""
+
+    PRE_WEEK = "pre_week"
+    WEEK = "week"
+    MONTH = "month"
+    QUARTER = "quarter"
+    YEAR = "year"
+
+
 class ReviewPeriod(BaseModel):
     """Basic review period."""
 
-    end: datetime.date
+    date: datetime.date
+    scope: ReviewPeriodScope
 
-    # May be calculated later
-    start: datetime.date | None = None
+    start: datetime.date | None = None  # Calculated later
+    end: datetime.date | None = None  # Calculated later
 
-    length: datetime.timedelta = datetime.timedelta(days=7)
+    def adjust(self):
+        """Each ReviewPeriod should have .adjust() method to allow instantiate proper periods for any given date in its boundaries.
+
+        For base ReviewPeriod it does nothing.
+        """
+        pass
 
     @override
     def model_post_init(self, context: Any) -> None:
-        if self.start is not None and self.start >= self.end:
-            raise ErrorReviewPeriodStartAfterEnd
-
-        self.start = self.end - self.length
+        self.adjust()
 
 
 class ReviewPeriodWeek(ReviewPeriod):
     """One week."""
 
-    length: datetime.timedelta = datetime.timedelta(days=7)
+    scope: ReviewPeriodScope = ReviewPeriodScope.WEEK
+
+    @override
+    def adjust(self):
+        start = self.date
+
+        while start.isoweekday() > 1:
+            start -= datetime.timedelta(days=1)
+
+        self.start = start
+        self.end = self.start + datetime.timedelta(days=6)
 
 
 class ReviewPeriodMonth(ReviewPeriod):
     """One month."""
 
-    # TODO: Month should be real month, calculate dates as "from 1 to 28/30/31 day"
+    scope: ReviewPeriodScope = ReviewPeriodScope.MONTH
 
-    length: datetime.timedelta = datetime.timedelta(days=28)
+    @override
+    def adjust(self):
+        start = self.date
+
+        while int(start.strftime("%d")) > 1:
+            start -= datetime.timedelta(days=1)
+
+        _, days_in_month = calendar.monthrange(start.year, start.month)
+
+        self.start = start
+        self.end = self.start + datetime.timedelta(days=days_in_month - 1)
 
 
 # TODO: Implement Quarter with month-bound dates
-# class ReviewPeriodQuarter(ReviewPeriod):
-#     length: datetime.timedelta = datetime.timedelta(days=90)
-
 # TODO: Implement Year with proper dates 01-01 to 31-12
-# class ReviewPeriodYear(ReviewPeriod):
-#     length: datetime.timedelta = datetime.timedelta(days=365)

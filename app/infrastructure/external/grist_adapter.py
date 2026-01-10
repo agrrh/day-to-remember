@@ -39,3 +39,10 @@ class GristAdapter:
         """Create single record."""
 
         return self.create_records([data])[0]
+
+    def upsert_record(self, match: dict, data: dict) -> list[dict]:
+        """Upsert record that match "match" argument with "data" fields.
+
+        Ref: https://support.getgrist.com/api/#tag/records/operation/replaceRecords
+        """
+        return self._client_sql.upsert(self.table_id, match, data)

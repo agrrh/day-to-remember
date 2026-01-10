@@ -3,6 +3,7 @@ import locale
 
 from app.dto.abstract_message import AbstractMessageDTO
 from app.dto.telegram_sending import TelegramSendingDTO
+from app.infrastructure.env import DEV_RUN, DEV_USER_UUID_LIST
 from app.infrastructure.repositories.user import UserRepository
 
 
@@ -34,6 +35,9 @@ class AskForFactsUseCase:
         )
 
         users = self.user_repository.get_active_users()
+
+        if DEV_RUN:
+            users = filter(lambda u: u.uuid in DEV_USER_UUID_LIST, users)
 
         for user in users:
             sending = TelegramSendingDTO(

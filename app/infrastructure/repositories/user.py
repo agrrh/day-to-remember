@@ -1,4 +1,5 @@
 import copy
+from uuid import UUID
 
 from telebot.types import Message as TgMessage
 
@@ -61,6 +62,28 @@ class UserRepository:
         users_found = self.adapter.get_records(
             filters={
                 "telegram_id": message.from_user.id,
+            }
+        )
+
+        match len(users_found):
+            case 0:
+                raise ErrorUserNotFound
+            case 1:
+                _u = users_found[0]
+                user = User(**_u)
+            case _:
+                raise ErrorMultipleUsersFound
+
+        return user
+
+    def get_by_uuid(self, uuid: str) -> User:
+        """Get User by its UUID."""
+
+        uuid = str(UUID(uuid))
+
+        users_found = self.adapter.get_records(
+            filters={
+                "uuid": uuid,
             }
         )
 

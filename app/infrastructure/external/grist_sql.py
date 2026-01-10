@@ -1,4 +1,4 @@
-from typing import List
+from typing import Callable, List
 
 import requests
 
@@ -38,33 +38,70 @@ class GristSQLAPI:
 
     def __call(
         self,
-        sql: str,
+        path: str,
+        params: dict,
+        body: dict,
+        method: Callable = requests.get,
     ) -> GristSQLResponse:
-        url = f"{self.server_url}/api/docs/{self.document_id}/sql"
+        url = f"{self.server_url}/api/docs/{self.document_id}/{path}"
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
         }
-        params = {
-            "q": sql,
-        }
 
         try:
-            resp = requests.get(
+            resp = method(
                 url,
                 headers=headers,
                 params=params,
+                json=body,
                 timeout=60,
             )
         except Exception:
             raise ErrorGristSQLAPI
 
         if resp.status_code != 200:
+            # TODO: Add debug-level logging of following values: url, params, body, resp.status_code, resp.text
             raise ErrorGristSQLAPIBadResponse
 
         return resp.json()
 
-    def query(self, query: str):
+    def __call_api(
+        self, path: str, params: dict, body: dict, method: Callable = requests.get
+    ):
+        """Send a call to API."""
+        return self.__call(method=method, path=path, params=params, body=body)
+
+    def __call_sql(self, q: str):
+        """Send an SQL call to API."""
+        path = "sql"
+        params = {
+            "q": q,
+        }
+        body = {}
+        return self.__call(path=path, params=params, body=body)
+
+    def query(self, q: str):
         """Send a query."""
         # TODO: Add logging, error handling?
-        return self.__call(query)
+        return self.__call_sql(q)
+
+    def upsert(self, table_id: str, match: dict, data: dict):
+        """Update or add records."""
+
+        params = {}
+        body = {
+            "records": [
+                {
+                    "require": match,
+                    "fields": data,
+                }
+            ]
+        }
+
+        return self.__call_api(
+            method=requests.put,
+            path=f"tables/{table_id}/records",
+            params=params,
+            body=body,
+        )
