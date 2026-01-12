@@ -15,7 +15,6 @@ from app.infrastructure.repositories.review_session import (
     ReviewSessionRepository,
 )
 from app.infrastructure.repositories.user import UserRepository
-from tg_bot import fact_repository
 
 
 class PlanReviewSessionsUseCase:
@@ -51,7 +50,9 @@ class PlanReviewSessionsUseCase:
 
             # Find ReviewSession by User and Period
             try:
-                rs_stored = self.rs_repository.get_by_user_and_period(user, period)
+                rs_stored = self.rs_repository.get_by_user_and_period(
+                    user, period
+                )
 
                 selected_fact = None
                 if rs_stored.selected_fact_uuid:
@@ -78,12 +79,13 @@ class PlanReviewSessionsUseCase:
                 rs = ReviewSession(user=user, period=period)
 
             # Collect/refresh Facts for current ReviewSession
-            rs.facts = fact_repository.get_by_review_session(user, rs)
+            rs.facts = self.fact_repository.get_by_review_session(user, rs)
             rs.status = ReviewSessionStatus.COLLECTED
 
             # TODO: Get rid of this, we should not even convert date to unix timestamps here
             if not (
-                hasattr(period.start, "timetuple") and hasattr(period.end, "timetuple")
+                hasattr(period.start, "timetuple")
+                and hasattr(period.end, "timetuple")
             ):
                 raise ValueError
 
@@ -93,7 +95,9 @@ class PlanReviewSessionsUseCase:
                 period_scope=rs.period.scope,
                 date_start=time.mktime(period.start.timetuple()),
                 date_end=time.mktime(period.end.timetuple()),
-                fact_uuids=json.dumps([_.uuid for _ in rs.facts]),  # ty: ignore[invalid-argument-type]
+                fact_uuids=json.dumps(
+                    [_.uuid for _ in rs.facts]
+                ),  # ty: ignore[invalid-argument-type]
                 status=rs.status,
             )
 
