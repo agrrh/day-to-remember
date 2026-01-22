@@ -64,6 +64,6 @@ day-to-remember/
 
 ## Additional Notes
 
-- Use `docker inspect` to debug container issues
+- Follow Conventional Commits standard working with `git`
 - Environment variables in `.env` are crucial for API connections
 - The project follows a layered architecture pattern
