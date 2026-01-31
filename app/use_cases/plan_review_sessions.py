@@ -40,9 +40,13 @@ class PlanReviewSessionsUseCase:
             users = filter(lambda u: u.uuid in DEV_USER_UUID_LIST, users)
 
         for user in users:
+            # TODO: Also process other periods
+
             # WEEK
 
-            # TODO: Also process other periods
+            print(
+                f'Processing user "{user.name}" (tg {user.telegram_id}, uuid {user.uuid})'
+            )
 
             scope = ReviewPeriodScope.WEEK
 
@@ -50,9 +54,11 @@ class PlanReviewSessionsUseCase:
 
             # Find ReviewSession by User and Period
             try:
-                rs_stored = self.rs_repository.get_by_user_and_period(
-                    user, period
+                print(
+                    f"Seeking for existing ReviewSessions for a {period.scope} from {period.start}"
                 )
+
+                rs_stored = self.rs_repository.get_by_user_and_period(user, period)
 
                 selected_fact = None
                 if rs_stored.selected_fact_uuid:
@@ -76,18 +82,24 @@ class PlanReviewSessionsUseCase:
                     selected_fact=selected_fact,
                 )
             except Error_ReviewSession_NotFound:
+                # No existing session found, fallback to fresh one
+                print("No existing ReviewSession, creating new one")
                 rs = ReviewSession(user=user, period=period)
 
             # Collect/refresh Facts for current ReviewSession
+
+            print("Collecting facts for ReviewSession")
+
             rs.facts = self.fact_repository.get_by_review_session(user, rs)
             rs.status = ReviewSessionStatus.COLLECTED
 
             # TODO: Get rid of this, we should not even convert date to unix timestamps here
             if not (
-                hasattr(period.start, "timetuple")
-                and hasattr(period.end, "timetuple")
+                hasattr(period.start, "timetuple") and hasattr(period.end, "timetuple")
             ):
                 raise ValueError
+
+            print("Converting ReviewSession to ReviewSessionStored")
 
             rs_stored = ReviewSessionStored(
                 uuid=rs.uuid,
@@ -95,10 +107,10 @@ class PlanReviewSessionsUseCase:
                 period_scope=rs.period.scope,
                 date_start=time.mktime(period.start.timetuple()),
                 date_end=time.mktime(period.end.timetuple()),
-                fact_uuids=json.dumps(
-                    [_.uuid for _ in rs.facts]
-                ),  # ty: ignore[invalid-argument-type]
+                fact_uuids=json.dumps([_.uuid for _ in rs.facts]),  # ty: ignore[invalid-argument-type]
                 status=rs.status,
             )
+
+            print("Upserting to database")
 
             self.rs_repository.upsert(rs_stored)

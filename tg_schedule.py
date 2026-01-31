@@ -37,6 +37,8 @@ telegram_adapter = TelegramAdapter(handler=bot)
 def job_ask_for_facts():
     """Ask User to write today's Fact."""
 
+    print("Asking for today's facts ...")
+
     ask_for_facts = AskForFactsUseCase(
         user_repository=user_repository,
     )
@@ -47,6 +49,9 @@ def job_ask_for_facts():
 
 def job_plan_review_sessions():
     """Form ReviewSessions for Users to later recieve as digests."""
+
+    print("Plan review sessions ...")
+
     plan_review_sessions = PlanReviewSessionsUseCase(
         user_repository=user_repository,
         fact_repository=fact_repository,
@@ -58,6 +63,8 @@ def job_plan_review_sessions():
 
 def job_send_weekly_digest():
     """Ask User to choose most important Fact out of a weekly list."""
+
+    print("Sending weekly digest ...")
 
     send_weekly = SendWeeklyDigestUseCase(
         user_repository=user_repository,
