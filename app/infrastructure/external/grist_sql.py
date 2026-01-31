@@ -62,6 +62,8 @@ class GristSQLAPI:
 
         if resp.status_code != 200:
             # TODO: Add debug-level logging of following values: url, params, body, resp.status_code, resp.text
+            print("Error during Grist SQL request, debug info:", url, params, body)
+            print("Grist response: ", resp.status_code, resp.text)
             raise ErrorGristSQLAPIBadResponse
 
         return resp.json()
