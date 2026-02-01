@@ -107,7 +107,7 @@ class FactRepository:
             WHERE
                 user_uuid = '{user_uuid}'
                 AND date >= unixepoch('{date_start}') AND date <= unixepoch('{date_end}')
-                AND selected_at_scope != {scope_query}
+                AND selected_at_scope {scope_query}
             ORDER BY date DESC
             LIMIT 100
         """.format(
