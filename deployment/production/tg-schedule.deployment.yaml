@@ -7,7 +7,7 @@ metadata:
   namespace: day-to-remember
 
 spec:
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 3
   strategy:
     type: Recreate
